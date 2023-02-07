@@ -1,4 +1,11 @@
 spring:
   cloud:
     function:
-      definition: ${FUNCTION_NAME:}
+      definition: addTransaction
+
+amazon:
+  dynamodb:
+    endpoint: http://localhost:8000/
+  aws:
+    accesskey: key
+    secretkey: key2

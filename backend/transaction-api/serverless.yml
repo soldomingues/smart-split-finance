@@ -3,9 +3,17 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: java11
+  stage: ${env:STAGE, 'dev'}
 
 package:
   artifact: target/transaction-api-aws.jar
+
+custom:
+  dynamodb:
+    start:
+      migrate: true
+    stages:
+      - dev
 
 functions:
   addTransaction:
@@ -16,3 +24,24 @@ functions:
       - http:
           path: transactions
           method: post
+
+resources:
+  Resources:
+    GroupTransactionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: GroupTransactions
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: transactionId
+            AttributeType: S
+          - AttributeName: groupId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: groupId
+            KeyType: HASH
+          - AttributeName: transactionId
+            KeyType: RANGE
+
+plugins:
+  - serverless-dynamodb-local
