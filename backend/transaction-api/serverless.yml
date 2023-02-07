@@ -1,0 +1,18 @@
+service: transaction-api
+frameworkVersion: '3'
+provider:
+  name: aws
+  runtime: java11
+
+package:
+  artifact: target/transaction-api-aws.jar
+
+functions:
+  addTransaction:
+    handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest
+    environment:
+      FUNCTION_NAME: addTransaction
+    events:
+      - http:
+          path: transactions
+          method: post
